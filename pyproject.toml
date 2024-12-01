@@ -9,9 +9,16 @@ readme = "README.md"
 homepage = "https://github.com/yongkheehou/crypto_stream/"
 repository = "https://github.com/yongkheehou/crypto_stream/"
 documentation = "https://github.com/yongkheehou/crypto_stream/"
-keywords = ["Kafka",
+keywords = ["FastAPI",
+            "Nginx",
+            "Kafka",
             "Flink",
-            "AdalFlow"]
+            "AdalFlow",
+            "Streamlit",
+            "Elasticsearch",
+            "Kibana",
+            "Docker",
+            "Kubernetes"]
 
 [tool.poetry.dependencies]
 python = "^3.12"

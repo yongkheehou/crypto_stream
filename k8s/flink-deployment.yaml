@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flink-service
+  labels:
+    app: flink-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flink-service
+  template:
+    metadata:
+      labels:
+        app: flink-service
+    spec:
+      containers:
+      - name: flink-service
+        image: crypto-stream-flink:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8001
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flink-service
+spec:
+  type: NodePort
+  ports:
+  - port: 8001
+    targetPort: 8001
+    nodePort: 30001
+  selector:
+    app: flink-service

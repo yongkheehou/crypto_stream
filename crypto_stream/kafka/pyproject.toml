@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "crypto-stream-kafka"
+version = "0.1.0"
+description = "Kafka service for crypto streaming platform"
+authors = ["yongkheehou <yongkheehou@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.109.0"
+uvicorn = "^0.27.0"
+pydantic = "^2.5.2"
+kafka-python = "^2.0.2"
+httpx = "^0.26.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

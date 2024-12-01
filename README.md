@@ -106,20 +106,36 @@ The project uses Poetry for dependency management and Docker for containerizatio
 ```
 crypto_stream/
 ├── flink/
-│   ├── server.py
-│   └── Dockerfile
+│   ├── __init__.py
+│   ├── Dockerfile
+│   ├── poetry.lock
+│   ├── pyproject.toml
+│   └── server.py
+├── k8s/
+│   ├── flink-deployment.yaml
+│   ├── kafka-deployment.yaml
+│   └── streamlit-deployment.yaml
 ├── kafka/
-│   ├── server.py
-│   └── Dockerfile
+│   ├── __init__.py
+│   ├── Dockerfile
+│   ├── poetry.lock
+│   ├── pyproject.toml
+│   └── server.py
+├── logger/
+│   ├── __init__.py
+│   ├── Dockerfile
+│   ├── poetry.lock
+│   ├── pyproject.toml
+│   └── server.py
+├── shared/
+│   └── logging_client.py
 ├── streamlit/
-│   ├── server.py
-│   └── Dockerfile
-├── utils/
-│   └── logger.py
-└── k8s/
-    ├── flink-deployment.yaml
-    ├── kafka-deployment.yaml
-    └── streamlit-deployment.yaml
+│   ├── __init__.py
+│   ├── Dockerfile
+│   ├── poetry.lock
+│   ├── pyproject.toml
+│   └── server.py
+└── Makefile
 ```
 
 ## License

@@ -33,10 +33,14 @@ k8s-deploy: build
 	minikube image load crypto-stream-flink:latest
 	minikube image load crypto-stream-kafka:latest
 	minikube image load crypto-stream-streamlit:latest
-	kubectl apply -f k8s/logger-deployment.yaml
-	kubectl apply -f k8s/flink-deployment.yaml
-	kubectl apply -f k8s/kafka-deployment.yaml
-	kubectl apply -f k8s/streamlit-deployment.yaml
+	@echo "Deploying Logger service..."
+	kubectl apply -f crypto_stream/k8s/logger-deployment.yaml
+	@echo "Deploying Flink service..."
+	kubectl apply -f crypto_stream/k8s/flink-deployment.yaml
+	@echo "Deploying Kafka service..."
+	kubectl apply -f crypto_stream/k8s/kafka-deployment.yaml
+	@echo "Deploying Streamlit service..."
+	kubectl apply -f crypto_stream/k8s/streamlit-deployment.yaml
 
 k8s-forward:
 	@echo "Port forwarding for Logger service..."
@@ -64,10 +68,10 @@ k8s-urls:
 	@echo "Streamlit service: $$(minikube service streamlit-service --url)"
 
 k8s-clean:
-	kubectl delete -f k8s/logger-deployment.yaml
-	kubectl delete -f k8s/flink-deployment.yaml
-	kubectl delete -f k8s/kafka-deployment.yaml
-	kubectl delete -f k8s/streamlit-deployment.yaml
+	kubectl delete -f crypto_stream/k8s/logger-deployment.yaml
+	kubectl delete -f crypto_stream/k8s/flink-deployment.yaml
+	kubectl delete -f crypto_stream/k8s/kafka-deployment.yaml
+	kubectl delete -f crypto_stream/k8s/streamlit-deployment.yaml
 
 # Cleanup
 clean:

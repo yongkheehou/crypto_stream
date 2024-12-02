@@ -39,10 +39,9 @@ kind: Service
 metadata:
   name: kafka-service
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
   - port: 8002
     targetPort: 8002
-    nodePort: 30002
   selector:
     app: kafka-service

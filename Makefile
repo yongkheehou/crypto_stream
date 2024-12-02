@@ -41,33 +41,24 @@ k8s-deploy: build
 	kubectl apply -f crypto_stream/k8s/kafka-deployment.yaml
 	@echo "Deploying Streamlit service..."
 	kubectl apply -f crypto_stream/k8s/streamlit-deployment.yaml
+	@echo "Deploying Ingress..."
+	kubectl apply -f crypto_stream/k8s/ingress.yaml
 
-k8s-forward:
-	@echo "Port forwarding for Logger service..."
-	kubectl port-forward service/logger-service 8000:8000 &
-	@echo "Port forwarding for Flink service..."
-	kubectl port-forward service/flink-service 8001:8001 &
-	@echo "Port forwarding for Kafka service..."
-	kubectl port-forward service/kafka-service 8002:8002 &
-	@echo "Port forwarding for Streamlit service..."
-	kubectl port-forward service/streamlit-service 8003:8003 &
-	@echo "Port forwarding setup complete."
-
-k8s-stop-forward:
-	@echo "Stopping port forwarding..."
-	@pkill -f "kubectl port-forward service/logger-service"
-	@pkill -f "kubectl port-forward service/flink-service"
-	@pkill -f "kubectl port-forward service/kafka-service"
-	@pkill -f "kubectl port-forward service/streamlit-service"
-	@echo "Port forwarding stopped."
+k8s-tunnel:
+	minikube tunnel
 
 k8s-urls:
-	@echo "Logger service: $$(minikube service logger-service --url)"
-	@echo "Flink service: $$(minikube service flink-service --url)"
-	@echo "Kafka service: $$(minikube service kafka-service --url)"
-	@echo "Streamlit service: $$(minikube service streamlit-service --url)"
+	@echo "Ingress IP: $$(minikube ip)"
+	@echo ""
+	@echo "Available endpoints:"
+	@echo "- Health check:   http://$$(minikube ip)/health"
+	@echo "- Logger API:     http://$$(minikube ip)/api/v1/logger"
+	@echo "- Flink API:      http://$$(minikube ip)/api/v1/flink"
+	@echo "- Kafka API:      http://$$(minikube ip)/api/v1/kafka"
+	@echo "- Streamlit API:  http://$$(minikube ip)/api/v1/streamlit"
 
 k8s-clean:
+	kubectl delete -f crypto_stream/k8s/ingress.yaml
 	kubectl delete -f crypto_stream/k8s/logger-deployment.yaml
 	kubectl delete -f crypto_stream/k8s/flink-deployment.yaml
 	kubectl delete -f crypto_stream/k8s/kafka-deployment.yaml

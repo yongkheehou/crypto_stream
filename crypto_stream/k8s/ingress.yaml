@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: crypto-stream-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+spec:
+  rules:
+  - http:
+      paths:
+      # Logger Service
+      - path: /api/v1/logger(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: logger-service
+            port:
+              number: 8000
+
+      # Flink Service
+      - path: /api/v1/flink(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: flink-service
+            port:
+              number: 8001
+
+      # Kafka Service
+      - path: /api/v1/kafka(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kafka-service
+            port:
+              number: 8002
+
+      # Streamlit Service
+      - path: /api/v1/streamlit(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: streamlit-service
+            port:
+              number: 8003

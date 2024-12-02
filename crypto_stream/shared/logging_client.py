@@ -2,12 +2,11 @@ import httpx
 from typing import Dict, Optional
 import logging
 from datetime import datetime
+from .constants import LOGGER_URL
 
 
 class LoggerClient:
-    def __init__(
-        self, service_name: str, logger_url: str = "http://logger-service:8000"
-    ):
+    def __init__(self, service_name: str, logger_url: str = LOGGER_URL):
         self.service_name = service_name
         self.logger_url = logger_url
         self.client = httpx.AsyncClient()

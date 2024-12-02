@@ -4,15 +4,19 @@ A microservices-based cryptocurrency streaming platform using Apache Flink, Kafk
 
 ## Services
 
-1. **Flink Service** (Port 8001)
+1. **Logger Service** (Port 8000)
+   - Centralized logging service
+   - Handles log aggregation from all services
+
+2. **Flink Service** (Port 8001)
    - Manages Apache Flink jobs
    - Handles stream processing
 
-2. **Kafka Service** (Port 8002)
+3. **Kafka Service** (Port 8002)
    - Manages Kafka topics
    - Handles message production/consumption
 
-3. **Streamlit Service** (Port 8003)
+4. **Streamlit Service** (Port 8003)
    - Manages dashboards
    - Provides visualization interface
 
@@ -20,122 +24,112 @@ A microservices-based cryptocurrency streaming platform using Apache Flink, Kafk
 
 - Python 3.12+
 - Poetry
-- Docker
+- Docker Desktop
 - Minikube
 - kubectl
 
-## Setup
+## Local Development Setup
 
-1. Install dependencies:
+1. Lock dependencies for all services:
+```bash
+make lock
+```
+
+2. Install dependencies:
 ```bash
 make install
 ```
 
-2. Build Docker images:
+3. Build Docker images:
 ```bash
 make build
 ```
 
-## Running Locally (Docker Compose)
-
-Start all services using Docker Compose:
-```bash
-make run-local
-```
-
-Services will be available at:
-- Flink: http://localhost:8001
-- Kafka: http://localhost:8002
-- Streamlit: http://localhost:8003
-
-## Running on Kubernetes (Minikube)
-
-1. Start Minikube and setup ingress:
+4. Set up Minikube and enable required addons:
 ```bash
 make k8s-setup
 ```
 
-2. Deploy services:
+5. Deploy services to Kubernetes:
 ```bash
 make k8s-deploy
 ```
 
-3. Get service URLs:
+6. Start Minikube tunnel (keep this running in a separate terminal):
 ```bash
-make k8s-urls
+make k8s-tunnel
 ```
+
+7. Access services through localhost:
+- Logger Service: http://localhost/api/v1/logger
+- Flink Service: http://localhost/api/v1/flink
+- Kafka Service: http://localhost/api/v1/kafka
+- Streamlit Service: http://localhost/api/v1/streamlit
 
 ## API Documentation
 
 Each service provides its own OpenAPI documentation:
 
-### Flink Service
-- Swagger UI: http://localhost:8001/api/v1/flink/docs
-- ReDoc: http://localhost:8001/api/v1/flink/redoc
-- OpenAPI JSON: http://localhost:8001/api/v1/flink/openapi.json
+- Logger Service:
+  - Docs: http://localhost/api/v1/logger/docs
+  - ReDoc: http://localhost/api/v1/logger/redoc
+  - OpenAPI: http://localhost/api/v1/logger/openapi.json
 
-### Kafka Service
-- Swagger UI: http://localhost:8002/api/v1/kafka/docs
-- ReDoc: http://localhost:8002/api/v1/kafka/redoc
-- OpenAPI JSON: http://localhost:8002/api/v1/kafka/openapi.json
+- Flink Service:
+  - Docs: http://localhost/api/v1/flink/docs
+  - ReDoc: http://localhost/api/v1/flink/redoc
+  - OpenAPI: http://localhost/api/v1/flink/openapi.json
 
-### Streamlit Service
-- Swagger UI: http://localhost:8003/api/v1/streamlit/docs
-- ReDoc: http://localhost:8003/api/v1/streamlit/redoc
-- OpenAPI JSON: http://localhost:8003/api/v1/streamlit/openapi.json
+- Kafka Service:
+  - Docs: http://localhost/api/v1/kafka/docs
+  - ReDoc: http://localhost/api/v1/kafka/redoc
+  - OpenAPI: http://localhost/api/v1/kafka/openapi.json
 
-When running on Kubernetes, replace localhost with the appropriate Minikube IP (get it using `minikube ip`).
+- Streamlit Service:
+  - Docs: http://localhost/api/v1/streamlit/docs
+  - ReDoc: http://localhost/api/v1/streamlit/redoc
+  - OpenAPI: http://localhost/api/v1/streamlit/openapi.json
 
 ## Cleanup
 
-1. Stop local services:
-```bash
-make clean
-```
-
-2. Clean Kubernetes deployments:
+1. Delete Kubernetes deployments:
 ```bash
 make k8s-clean
 ```
 
-## Development
+2. Clean up Docker containers and Minikube:
+```bash
+make clean
+```
 
-The project uses Poetry for dependency management and Docker for containerization. Each service is structured as a separate microservice with its own FastAPI server.
-
-### Project Structure
+## Project Structure
 ```
 crypto_stream/
-├── flink/
-│   ├── __init__.py
+├── shared/                 # Shared utilities
+│   └── logging_client.py   # Centralized logging client
+├── logger/                 # Logger Service
 │   ├── Dockerfile
-│   ├── poetry.lock
 │   ├── pyproject.toml
 │   └── server.py
-├── k8s/
+├── flink/                  # Flink Service
+│   ├── Dockerfile
+│   ├── pyproject.toml
+│   └── server.py
+├── kafka/                  # Kafka Service
+│   ├── Dockerfile
+│   ├── pyproject.toml
+│   └── server.py
+├── streamlit/             # Streamlit Service
+│   ├── Dockerfile
+│   ├── pyproject.toml
+│   └── server.py
+├── k8s/                   # Kubernetes Configurations
+│   ├── ingress.yaml
+│   ├── logger-deployment.yaml
 │   ├── flink-deployment.yaml
 │   ├── kafka-deployment.yaml
 │   └── streamlit-deployment.yaml
-├── kafka/
-│   ├── __init__.py
-│   ├── Dockerfile
-│   ├── poetry.lock
-│   ├── pyproject.toml
-│   └── server.py
-├── logger/
-│   ├── __init__.py
-│   ├── Dockerfile
-│   ├── poetry.lock
-│   ├── pyproject.toml
-│   └── server.py
-├── shared/
-│   └── logging_client.py
-├── streamlit/
-│   ├── __init__.py
-│   ├── Dockerfile
-│   ├── poetry.lock
-│   ├── pyproject.toml
-│   └── server.py
-└── Makefile
+└── Makefile              # Build and deployment commands
 ```
 
 ## License

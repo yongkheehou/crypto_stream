@@ -163,3 +163,4 @@ cython_debug/
 
 .ruff_cache/
 minikube-darwin-arm64
+myenv/

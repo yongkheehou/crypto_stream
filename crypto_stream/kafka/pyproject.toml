@@ -6,12 +6,13 @@ authors = ["yongkheehou <yongkheehou@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 fastapi = "^0.109.0"
 uvicorn = "^0.27.0"
 pydantic = "^2.5.2"
 kafka-python = "^2.0.2"
 httpx = "^0.26.0"
+python-dotenv = "^1.0.1"
 
 [build-system]
 requires = ["poetry-core"]

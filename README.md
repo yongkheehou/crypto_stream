@@ -1,6 +1,6 @@
 # Crypto Stream
 
-A microservices-based cryptocurrency streaming platform using Apache Flink, Kafka, and Streamlit.
+A microservices-based cryptocurrency streaming platform using Apache Kafka, Flink, and Streamlit.
 
 ## Services
 
@@ -117,9 +117,9 @@ crypto_stream/
 └── Makefile              # Build and deployment commands
 ```
 
-> **Note**: This is an experimental project designed for local development and testing. The deployment is configured to run on a local Kubernetes cluster using Minikube, making it suitable for development and experimentation purposes. For production AWS deployments, additional configurations and security measures would be required.
-
 ## Potential Future Improvements for Production
+
+> **Note**: This is an experimental project designed for local development and testing. The deployment is configured to run on a local Kubernetes cluster using Minikube, making it suitable for development and experimentation purposes. For production AWS deployments, additional configurations and security measures would be required.
 
 ### AWS Infrastructure as Code
 - [ ] Add Terraform configurations for AWS:

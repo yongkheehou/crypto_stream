@@ -1,6 +1,6 @@
 # Crypto Stream
 
-A microservices-based cryptocurrency streaming platform using Apache Kafka, Flink, and Streamlit.
+A microservices-based cryptocurrency streaming platform using Apache Flink, Kafka, and Streamlit.
 
 ## Services
 

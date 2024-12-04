@@ -33,6 +33,8 @@ k8s-deploy: build
 	minikube image load crypto-stream-flink:latest
 	minikube image load crypto-stream-kafka:latest
 	minikube image load crypto-stream-streamlit:latest
+	@echo "Deploying Kafka broker and Zookeeper..."
+	kubectl apply -f crypto_stream/k8s/kafka-broker.yaml
 	@echo "Deploying Logger service..."
 	kubectl apply -f crypto_stream/k8s/logger-deployment.yaml
 	@echo "Deploying Flink service..."
@@ -46,6 +48,9 @@ k8s-deploy: build
 
 k8s-tunnel:
 	minikube tunnel
+
+k8s-pods:
+	kubectl get pods
 
 k8s-urls:
 	@echo "Ingress IP: $$(minikube ip)"
@@ -63,6 +68,7 @@ k8s-clean:
 	kubectl delete -f crypto_stream/k8s/flink-deployment.yaml
 	kubectl delete -f crypto_stream/k8s/kafka-deployment.yaml
 	kubectl delete -f crypto_stream/k8s/streamlit-deployment.yaml
+	kubectl delete -f crypto_stream/k8s/kafka-broker.yaml
 
 # Cleanup
 clean:

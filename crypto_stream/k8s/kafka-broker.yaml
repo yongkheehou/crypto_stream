@@ -94,6 +94,13 @@ spec:
       labels:
         app: kafka-broker
     spec:
+      initContainers:
+      - name: init-kafka
+        image: busybox
+        command: ['sh', '-c', 'rm -rf /var/lib/kafka/data/*']
+        volumeMounts:
+        - name: kafka-data
+          mountPath: /var/lib/kafka/data
       containers:
       - name: kafka
         image: confluentinc/cp-kafka:7.5.1
@@ -115,6 +122,8 @@ spec:
         - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
           value: "1"
         - name: KAFKA_AUTO_CREATE_TOPICS_ENABLE
+          value: "true"
+        - name: KAFKA_DELETE_TOPIC_ENABLE
           value: "true"
         volumeMounts:
         - name: kafka-data

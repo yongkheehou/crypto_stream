@@ -10,6 +10,7 @@ from shared.logging_client import LoggerClient
 from models import StreamStatus, StreamConfig
 from websocket_manager import WebSocketManager
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 
@@ -187,3 +188,17 @@ class StreamManager:
         if self.kafka_producer:
             # Make sure all messages are delivered before shutting down
             self.kafka_producer.flush()
+
+    def create_consumer(self, topic: str):
+        """Create a Kafka consumer for a topic"""
+        from confluent_kafka import Consumer
+
+        consumer = Consumer(
+            {
+                "bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS,
+                "group.id": f"consumer-{topic}-{int(time.time())}",
+                "auto.offset.reset": "latest",
+            }
+        )
+        consumer.subscribe([topic])
+        return consumer

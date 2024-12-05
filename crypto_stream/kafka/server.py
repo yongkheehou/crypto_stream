@@ -14,6 +14,7 @@ from shared.logging_client import LoggerClient
 from models import Message, StreamConfig
 from stream_manager import StreamManager
 from websocket_manager import WebSocketManager
+import json
 
 # Initialize logger
 logger = LoggerClient("kafka-service")
@@ -184,3 +185,38 @@ async def produce_message(topic: str, message: Message):
     except Exception as e:
         await logger.error(f"Error producing message: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.websocket("/topics/{topic}/consume")
+async def consume_messages(websocket: WebSocket, topic: str):
+    """WebSocket endpoint to consume messages from a topic"""
+    await websocket.accept()
+
+    try:
+        # Create a consumer for this connection
+        consumer = stream_manager.create_consumer(topic)
+
+        while True:
+            try:
+                # Poll for messages
+                messages = consumer.poll(timeout_ms=1000)
+                for tp, records in messages.items():
+                    for record in records:
+                        # Send message to WebSocket client
+                        await websocket.send_json(
+                            {
+                                "topic": topic,
+                                "partition": tp.partition,
+                                "offset": record.offset,
+                                "value": json.loads(record.value.decode("utf-8")),
+                            }
+                        )
+            except Exception as e:
+                await logger.error(f"Error consuming messages: {str(e)}")
+                break
+
+    except WebSocketDisconnect:
+        pass
+    finally:
+        if consumer:
+            consumer.close()

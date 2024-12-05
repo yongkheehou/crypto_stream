@@ -1,9 +1,20 @@
 from abc import ABC, abstractmethod
 import numpy as np
+import logging
 from pyflink.datastream import DataStream
 from pyflink.datastream.window import TumblingProcessingTimeWindows, TimeWindow
 from pyflink.datastream.functions import WindowFunction
 from pyflink.common.time import Time
+
+# Configure logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(
+        logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    )
+    logger.addHandler(handler)
 
 
 class WindowAnalysisFunction(WindowFunction):
@@ -45,23 +56,50 @@ class MovingAverageAnalysis(AnalysisOperator):
 class RSIAnalysis(AnalysisOperator):
     def process(self, stream: DataStream) -> DataStream:
         def calculate_rsi(values):
-            prices = np.array(values)
-            deltas = np.diff(prices)
-            gains = deltas.copy()
-            losses = deltas.copy()
+            try:
+                prices = np.array(values)
+                if len(prices) < 2:
+                    logger.warning(
+                        f"Not enough data points for RSI calculation: {len(prices)}"
+                    )
+                    return {"value": 50.0, "status": "insufficient_data"}
 
-            gains[gains < 0] = 0
-            losses[losses > 0] = 0
-            losses = abs(losses)
+                # Remove any zero or negative prices
+                prices = prices[prices > 0]
+                if len(prices) < 2:
+                    logger.warning("Not enough valid prices after filtering")
+                    return {"value": 50.0, "status": "invalid_prices"}
 
-            avg_gain = np.mean(gains)
-            avg_loss = np.mean(losses)
+                # Calculate price changes
+                deltas = np.diff(prices)
+                gains = deltas.copy()
+                losses = deltas.copy()
 
-            if avg_loss == 0:
-                return 100.0
+                # Separate gains and losses
+                gains[gains < 0] = 0
+                losses[losses > 0] = 0
+                losses = abs(losses)
 
-            rs = avg_gain / avg_loss
-            return 100 - (100 / (1 + rs))
+                # Calculate average gains and losses
+                avg_gain = np.mean(gains) if len(gains) > 0 else 0
+                avg_loss = np.mean(losses) if len(losses) > 0 else 0
+
+                # Handle edge cases
+                if avg_loss == 0:
+                    rsi = 100.0 if avg_gain > 0 else 50.0
+                else:
+                    rs = avg_gain / avg_loss
+                    rsi = 100 - (100 / (1 + rs))
+
+                logger.info(
+                    f"RSI Calculation - Prices: {len(prices)}, "
+                    f"Gains: {avg_gain:.2f}, Losses: {avg_loss:.2f}, RSI: {rsi:.2f}"
+                )
+                return {"value": float(rsi), "status": "success"}
+
+            except Exception as e:
+                logger.error(f"Error calculating RSI: {str(e)}, Values: {values}")
+                return {"value": 50.0, "status": "error", "error": str(e)}
 
         return (
             stream.key_by(lambda x: "all")
@@ -79,13 +117,33 @@ class MACDAnalysis(AnalysisOperator):
 
     def process(self, stream: DataStream) -> DataStream:
         def calculate_macd(values):
-            prices = np.array(values)
-            ema_fast = np.mean(prices[-self.fast_period :])  # noqa: E203
-            ema_slow = np.mean(prices[-self.slow_period :])  # noqa: E203
-            macd_line = ema_fast - ema_slow
-            signal_line = np.mean(prices[-self.signal_period :])  # noqa: E203
-            histogram = macd_line - signal_line
-            return {"macd": macd_line, "signal": signal_line, "histogram": histogram}
+            try:
+                prices = np.array(values)
+                if len(prices) < max(
+                    self.fast_period, self.slow_period, self.signal_period
+                ):
+                    logger.warning(
+                        f"Not enough data points for MACD calculation: {len(prices)}"
+                    )
+                    return {"macd": 0, "signal": 0, "histogram": 0}
+
+                ema_fast = np.mean(prices[-self.fast_period :])  # noqa: E203
+                ema_slow = np.mean(prices[-self.slow_period :])  # noqa: E203
+                macd_line = ema_fast - ema_slow
+                signal_line = np.mean(prices[-self.signal_period :])  # noqa: E203
+                histogram = macd_line - signal_line
+
+                logger.info(
+                    f"MACD Calculation - Num prices: {len(prices)}, MACD: {macd_line:.2f}, Signal: {signal_line:.2f}"  # noqa: E501
+                )
+                return {
+                    "macd": macd_line,
+                    "signal": signal_line,
+                    "histogram": histogram,
+                }
+            except Exception as e:
+                logger.error(f"Error calculating MACD: {str(e)}, Values: {values}")
+                return {"macd": 0, "signal": 0, "histogram": 0}
 
         return (
             stream.key_by(lambda x: "all")
@@ -101,12 +159,28 @@ class BollingerBandsAnalysis(AnalysisOperator):
 
     def process(self, stream: DataStream) -> DataStream:
         def calculate_bollinger(values):
-            prices = np.array(values)
-            sma = np.mean(prices)
-            std = np.std(prices)
-            upper_band = sma + (self.num_std * std)
-            lower_band = sma - (self.num_std * std)
-            return {"middle": sma, "upper": upper_band, "lower": lower_band}
+            try:
+                prices = np.array(values)
+                if len(prices) < 2:
+                    logger.warning(
+                        f"Not enough data points for Bollinger Bands calculation: {len(prices)}"  # noqa: E501
+                    )
+                    return {"middle": prices[0], "upper": prices[0], "lower": prices[0]}
+
+                sma = np.mean(prices)
+                std = np.std(prices)
+                upper_band = sma + (self.num_std * std)
+                lower_band = sma - (self.num_std * std)
+
+                logger.info(
+                    f"Bollinger Bands - Num prices: {len(prices)}, SMA: {sma:.2f}, Upper: {upper_band:.2f}, Lower: {lower_band:.2f}"  # noqa: E501
+                )
+                return {"middle": sma, "upper": upper_band, "lower": lower_band}
+            except Exception as e:
+                logger.error(
+                    f"Error calculating Bollinger Bands: {str(e)}, Values: {values}"
+                )
+                return {"middle": 0, "upper": 0, "lower": 0}
 
         return (
             stream.key_by(lambda x: "all")

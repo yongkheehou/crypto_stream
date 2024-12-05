@@ -1,3 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: flink-state-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -27,12 +38,24 @@ spec:
           requests:
             cpu: "200m"
             memory: "256Mi"
+        env:
+        - name: FLINK_STATE_BACKEND
+          value: "filesystem"
+        - name: FLINK_CHECKPOINTS_DIRECTORY
+          value: "/opt/flink/state"
+        volumeMounts:
+        - name: flink-state
+          mountPath: /opt/flink/state
         livenessProbe:
           httpGet:
             path: /health
             port: 8001
           initialDelaySeconds: 30
           periodSeconds: 10
+      volumes:
+      - name: flink-state
+        persistentVolumeClaim:
+          claimName: flink-state-pvc
 ---
 apiVersion: v1
 kind: Service

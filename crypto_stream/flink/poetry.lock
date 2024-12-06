@@ -13,22 +13,23 @@ files = [
 
 [[package]]
 name = "anyio"
-version = "4.6.2.post1"
+version = "4.7.0"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
 optional = false
 python-versions = ">=3.9"
 files = [
-    {file = "anyio-4.6.2.post1-py3-none-any.whl", hash = "sha256:6d170c36fba3bdd840c73d3868c1e777e33676a69c3a72cf0a0d5d6d8009b61d"},
-    {file = "anyio-4.6.2.post1.tar.gz", hash = "sha256:4c8bc31ccdb51c7f7bd251f51c609e038d63e34219b44aa86e47576389880b4c"},
+    {file = "anyio-4.7.0-py3-none-any.whl", hash = "sha256:ea60c3723ab42ba6fff7e8ccb0488c898ec538ff4df1f1d5e642c3601d07e352"},
+    {file = "anyio-4.7.0.tar.gz", hash = "sha256:2f834749c602966b7d456a7567cafcb309f96482b5081d14ac93ccd457f9dd48"},
 ]
 
 [package.dependencies]
 idna = ">=2.8"
 sniffio = ">=1.1"
+typing_extensions = {version = ">=4.5", markers = "python_version < \"3.13\""}
 
 [package.extras]
-doc = ["Sphinx (>=7.4,<8.0)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme"]
-test = ["anyio[trio]", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypothesis (>=4.0)", "psutil (>=5.9)", "pytest (>=7.0)", "pytest-mock (>=3.6.1)", "trustme", "truststore (>=0.9.1)", "uvloop (>=0.21.0b1)"]
+doc = ["Sphinx (>=7.4,<8.0)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx_rtd_theme"]
+test = ["anyio[trio]", "coverage[toml] (>=7)", "exceptiongroup (>=1.2.0)", "hypothesis (>=4.0)", "psutil (>=5.9)", "pytest (>=7.0)", "pytest-mock (>=3.6.1)", "trustme", "truststore (>=0.9.1)", "uvloop (>=0.21)"]
 trio = ["trio (>=0.26.1)"]
 
 [[package]]
@@ -108,29 +109,29 @@ test = ["cryptography (>=36.0.0)", "freezegun (>=0.3.12)", "hypothesis (>5.0.0,<
 
 [[package]]
 name = "apache-flink"
-version = "1.20.0"
+version = "1.19.0"
 description = "Apache Flink Python API"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "apache-flink-1.20.0.tar.gz", hash = "sha256:2f93ff09b911c484fda4c4cf0f175a609d73017ba63d7cb21bd59e53c56fd64b"},
-    {file = "apache_flink-1.20.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:68839dc7cbec33f76ec2241e0035aa50642bfe618b0db0c1d49ce9aee216e4ac"},
-    {file = "apache_flink-1.20.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c8c926b6d869dea556cc11d975a7b9c2c8e2489db90cc7035620669f698df62d"},
-    {file = "apache_flink-1.20.0-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:2e5bcbd841f4c3a979001f05ccae16ab6e8845e254ae99cfbcef6b3f00700572"},
-    {file = "apache_flink-1.20.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:05bd6fee6292d5f4d84bda6ebedf954ca434787cdb14035609a56c2e57850606"},
-    {file = "apache_flink-1.20.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:3d013c0ffcfa5cf4491c233d1cee392ae4c7d9262851e01249bad0d6cb2d232b"},
-    {file = "apache_flink-1.20.0-cp311-cp311-manylinux1_x86_64.whl", hash = "sha256:cb1bbe4a0a50d0bccc9c452695c4d10b4f1540667b5a17bff6963173a2f5261e"},
-    {file = "apache_flink-1.20.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:93a376478a3abe74dd7b11ea83342bf691b85f56d100d33c59239692751ca9a8"},
-    {file = "apache_flink-1.20.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:85813618e70d8cfb2b9a5f25dca5c53a86af99afebe19cbcec10001618c07e0e"},
-    {file = "apache_flink-1.20.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:e678a9ecbfa3c30bc02b93e49ee823254614114ca5920b0270dfe741affcdc3d"},
-    {file = "apache_flink-1.20.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:c22beb6b8488fa86a45581cb6f62ae8b5dff256b7ba1bc8c91bb0878dcd71a74"},
-    {file = "apache_flink-1.20.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:23bafeb1b78d39b62fa95b738dbdccff889a57f5fadf3b59a873a0cb4c8f1292"},
-    {file = "apache_flink-1.20.0-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:c8074e88ce0dbc5b0e5e76705750e4e630760c37cc7bcd455046e73d8fdfe593"},
+    {file = "apache-flink-1.19.0.tar.gz", hash = "sha256:790c4c20e2126955149535b4136015ff84cb0986df5c98d97926f77850890d3c"},
+    {file = "apache_flink-1.19.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:e0e7e07c51c9949bc7b813eba98c88a9bab4a5895435ade503a245519442a0b4"},
+    {file = "apache_flink-1.19.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e00b25bc2eac4e6b7929ae74b9dfacecc0e62283d897d7a6bdd1b842058f99c3"},
+    {file = "apache_flink-1.19.0-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:8c391e274e98512d620bb16c87f2d5e253fa8b60fa6f37974f84842fcfceb231"},
+    {file = "apache_flink-1.19.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:8a209a116467291e1d5c0d7d9207b66d5f964222ab83a8ab3612725abd3ab796"},
+    {file = "apache_flink-1.19.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:47ce1a6ca7b25fee7fb68f6f952f901eb4f296a746c835f4eabd883623d52583"},
+    {file = "apache_flink-1.19.0-cp311-cp311-manylinux1_x86_64.whl", hash = "sha256:fb607231f5c80ff232ab67925a1df7f8784c99e153c283f464cf59e0ef5873b5"},
+    {file = "apache_flink-1.19.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:beea369a6625b35d37ea45dfa70229415fff14883ecdfc1d9d7e97eb78b9fd7a"},
+    {file = "apache_flink-1.19.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:100b8d77f084856066005d186a9790a6ac621e4081732fcb0dcff34cc6317230"},
+    {file = "apache_flink-1.19.0-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:c28cd57e12a83e014aae4d647c12c8e46be8519708dd94471ccbd917b180e000"},
+    {file = "apache_flink-1.19.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:9c4fe371af27710fdd962ffab9fb3bd3b46295dcccd02b99767ba430010280b8"},
+    {file = "apache_flink-1.19.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:bc7b442b510ee4ed1e23e7521f44895010859945a5698aa22953d5faaa63af01"},
+    {file = "apache_flink-1.19.0-cp39-cp39-manylinux1_x86_64.whl", hash = "sha256:2eecb2b7f85fb5bb57fc8c22cfcd6cbc721cc292e4310a6568e717c4cd746f96"},
 ]
 
 [package.dependencies]
 apache-beam = ">=2.43.0,<2.49.0"
-apache-flink-libraries = ">=1.20.0,<1.20.1"
+apache-flink-libraries = ">=1.19.0,<1.19.1"
 avro-python3 = ">=1.8.1,<1.9.2 || >1.9.2"
 cloudpickle = ">=2.2.0"
 fastavro = ">=1.1.0,<1.8.0 || >1.8.0"
@@ -148,12 +149,12 @@ requests = ">=2.26.0"
 
 [[package]]
 name = "apache-flink-libraries"
-version = "1.20.0"
+version = "1.19.0"
 description = "Apache Flink Libraries"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "apache-flink-libraries-1.20.0.tar.gz", hash = "sha256:808b381151c51d988c8fe5b5ae59d944d6e61d8193ee6832064f7ca14c88a583"},
+    {file = "apache-flink-libraries-1.19.0.tar.gz", hash = "sha256:bb3115c1c63702f95c3f89d5d952e9d98e26fd35b980a265d139790a6ea2c2a2"},
 ]
 
 [[package]]
@@ -1579,13 +1580,13 @@ files = [
 
 [[package]]
 name = "six"
-version = "1.16.0"
+version = "1.17.0"
 description = "Python 2 and 3 compatibility utilities"
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 files = [
-    {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
-    {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
+    {file = "six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274"},
+    {file = "six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81"},
 ]
 
 [[package]]
@@ -1788,4 +1789,4 @@ cffi = ["cffi (>=1.11)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "0bff756dbdbb9e77f68a5ac54b843c0d40cde3c1d40f3404376b56e7e40d45c9"
+content-hash = "cd68d1e8f5ce347f770a73e58a0e31ec832e302e089f1ceb6bee59bdbfd0a578"

@@ -12,9 +12,11 @@ job_manager = FlinkJobManager(logger)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup
+    await job_manager.start()
+
     yield
-    # Shutdown
+
+    await job_manager.shutdown()
     await logger.close()
 
 

@@ -15,7 +15,7 @@ RUN apt-get update && \
 RUN pip install poetry
 
 # Copy only the dependencies file
-COPY crypto_stream/kafka/pyproject.toml pyproject.toml
+COPY crypto_stream/kafka/pyproject.toml crypto_stream/kafka/poetry.lock ./
 
 # Configure poetry to not create a virtual environment
 RUN poetry config virtualenvs.create false

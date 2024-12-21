@@ -23,11 +23,11 @@ spec:
               number: 8000
 
       # Flink Service
-      - path: /api/v1/flink(/|$)(.*)
+      - path: /api/v1/spark(/|$)(.*)
         pathType: ImplementationSpecific
         backend:
           service:
-            name: flink-service
+            name: spark-service
             port:
               number: 8001
 

@@ -14,10 +14,6 @@ spec:
       labels:
         app: kafka-service
     spec:
-      initContainers:
-      - name: wait-for-kafka
-        image: busybox
-        command: ['sh', '-c', 'until nc -z kafka-broker.kafka-broker.svc.cluster.local 9092; do echo waiting for kafka-broker; sleep 2; done;']
       containers:
       - name: kafka-service
         image: crypto-stream-kafka:latest
@@ -26,7 +22,7 @@ spec:
         - containerPort: 8002
         env:
         - name: KAFKA_BOOTSTRAP_SERVERS
-          value: "kafka-broker.kafka-broker.svc.cluster.local:9092"
+          value: "kafka-broker:9092"
         - name: KAFKA_CLIENT_ID
           value: "crypto-stream-producer"
         - name: KAFKA_RETRIES
@@ -53,13 +49,15 @@ spec:
           failureThreshold: 30
           periodSeconds: 10
         livenessProbe:
-          exec:
-            command: ['sh', '-c', 'nc -z kafka-broker.kafka-broker.svc.cluster.local 9092']
+          httpGet:
+            path: /health
+            port: 8002
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
-          exec:
-            command: ['sh', '-c', 'nc -z kafka-broker.kafka-broker.svc.cluster.local 9092']
+          httpGet:
+            path: /health
+            port: 8002
           initialDelaySeconds: 15
           periodSeconds: 5
 ---
@@ -69,28 +67,34 @@ metadata:
   name: kafka-service
 spec:
   type: ClusterIP
-  selector:
-    app: kafka-service
   ports:
   - name: api
     port: 8002
     targetPort: 8002
+  selector:
+    app: kafka-service
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-kafka-traffic
+  name: allow-kafka-external
 spec:
   podSelector:
     matchLabels:
-      app: kafka-broker
+      app: kafka-service
   policyTypes:
-  - Ingress
-  ingress:
-  - from:
+  - Egress
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+    ports:
+    - protocol: TCP
+      port: 443
+  - to:
     - podSelector:
         matchLabels:
-          app: kafka-service
+          app: kafka-broker
     ports:
     - protocol: TCP
       port: 9092

@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: streamlit-service
-        image: crypto-stream-streamlit:latest
-        imagePullPolicy: Never
+        image: kheehou/crypto-stream-streamlit:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8003
         resources:

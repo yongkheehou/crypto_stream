@@ -16,8 +16,8 @@ spec:
     spec:
       containers:
       - name: logger-service
-        image: crypto-stream-logger:latest
-        imagePullPolicy: Never
+        image: kheehou/crypto-stream-logger:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
         resources:

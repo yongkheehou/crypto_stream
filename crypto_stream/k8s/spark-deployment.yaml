@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: spark-state-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-service
+  labels:
+    app: spark-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-service
+  template:
+    metadata:
+      labels:
+        app: spark-service
+    spec:
+      containers:
+      - name: spark-service
+        image: kheehou/crypto-stream-spark:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8001
+        env:
+        - name: SPARK_MASTER
+          value: "local[*]" # IMPORTANT: Review for production. Use a proper Spark cluster manager.
+        - name: KAFKA_BOOTSTRAP_SERVERS
+          value: "kafka-broker:9092"
+        volumeMounts:
+        - name: spark-state
+          mountPath: /opt/spark/state
+        resources:
+          requests:
+            cpu: "1"
+            memory: "2Gi"
+          limits:
+            cpu: "2"
+            memory: "4Gi"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8001
+          initialDelaySeconds: 15
+          periodSeconds: 5
+      volumes:
+      - name: spark-state
+        persistentVolumeClaim:
+          claimName: spark-state-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-service
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8001
+    targetPort: 8001
+  selector:
+    app: spark-service

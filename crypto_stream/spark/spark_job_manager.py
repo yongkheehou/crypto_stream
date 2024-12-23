@@ -1,29 +1,35 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col
 from models import SparkJob
+from shared.logging_client import LoggerClient
 from shared.constants import KAFKA_BOOTSTRAP_SERVERS
 from analysis import AnalysisFactory
-import logging
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger = LoggerClient("pyspark-service")
 
 
 class SparkJobManager:
     def __init__(self):
+        spark_version = "3.5.3"
+        spark_jars = f"/opt/spark/jars/spark-sql-kafka-0-10_2.12-{spark_version}.jar"
+
         self.spark = (
-            SparkSession.builder.appName("PySparkService")  # type: ignore
+            SparkSession.builder.appName("PySparkService")
+            .config("spark.jars", spark_jars)
+            .config("spark.submit.pyFiles", "/app/spark_files/spark_deps.zip")
             .config("spark.sql.streaming.checkpointLocation", "/tmp/checkpoints")
             .getOrCreate()
         )
+
+        self.spark.sparkContext.setLogLevel("ERROR")
         self.active_queries = {}
 
     def get_active_jobs(self):
         return list(self.active_queries.keys())
 
-    def start_job(self, job: SparkJob):
+    async def start_job(self, job: SparkJob):
         query_name = f"{job.name}-{job.analysis_type}"
-        logger.info(f"Starting Spark job: {query_name}")
+        await logger.info(f"spark job manager: Starting Spark job: {query_name}")
 
         # Read from Kafka
         kafka_stream = (
@@ -31,6 +37,10 @@ class SparkJobManager:
             .option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP_SERVERS)
             .option("subscribe", job.kafka_topic)
             .load()
+        )
+
+        await logger.info(
+            f"spark job manager: Reading from Kafka topic: {job.kafka_topic}"
         )
 
         value_df = kafka_stream.selectExpr("CAST(value AS STRING)")
@@ -41,9 +51,13 @@ class SparkJobManager:
             from_json(col("value"), schema).alias("data")
         ).select("data.*")
 
+        await logger.info(f"spark job manager: Applying analysis: {job.analysis_type}")
+
         # Use the AnalysisFactory to get the appropriate analysis operator
         analysis_operator = AnalysisFactory.get_operator(job)
         result_df = analysis_operator.process(parsed_df)
+
+        await logger.info("spark job manager: Analysis complete")
 
         # Print results to the console
         query = (

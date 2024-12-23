@@ -41,6 +41,15 @@ k8s-setup:
 	minikube start
 	minikube addons enable ingress
 
+deploy-spark:
+	kubectl delete -f crypto_stream/k8s/spark-deployment.yaml
+	docker login
+	docker build -t crypto-stream-spark:latest -f crypto_stream/spark/Dockerfile .
+	docker tag crypto-stream-spark:latest kheehou/crypto-stream-spark:latest
+	docker push kheehou/crypto-stream-spark:latest
+	minikube image load crypto-stream-spark:latest
+	kubectl apply -f crypto_stream/k8s/spark-deployment.yaml
+
 k8s-deploy: build
 	minikube image load crypto-stream-logger:latest
 	minikube image load crypto-stream-spark:latest

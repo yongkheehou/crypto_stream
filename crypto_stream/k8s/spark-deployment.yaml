@@ -38,7 +38,9 @@ spec:
           value: "kafka-broker:9092"
         volumeMounts:
         - name: spark-state
-          mountPath: /opt/spark/state
+          mountPath: /tmp/checkpoints
+        - name: spark-files
+          mountPath: /app/spark_files
         resources:
           requests:
             cpu: "1"
@@ -62,6 +64,8 @@ spec:
       - name: spark-state
         persistentVolumeClaim:
           claimName: spark-state-pvc
+      - name: spark-files
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

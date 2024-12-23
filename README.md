@@ -1,6 +1,6 @@
 # Crypto Stream
 
-A microservices-based cryptocurrency streaming platform using Apache Flink, Kafka, and Streamlit.
+A microservices-based cryptocurrency streaming platform using Apache Spark, Kafka, and Streamlit.
 
 ## Services
 
@@ -12,8 +12,8 @@ A microservices-based cryptocurrency streaming platform using Apache Flink, Kafk
    - Manages Kafka topics
    - Handles message production/consumption
 
-3. **Flink Service**
-   - Manages Apache Flink jobs
+3. **Spark Service**
+   - Manages Apache Spark jobs
    - Handles stream processing
 
 4. **Streamlit Service**
@@ -63,13 +63,13 @@ make k8s-tunnel
 
 7. Access services through localhost:
 - Logger Service: http://localhost/api/v1/logger
-- Flink Service: http://localhost/api/v1/flink
+- Spark Service: http://localhost/api/v1/spark
 - Kafka Service: http://localhost/api/v1/kafka
 - Streamlit Service: http://localhost/api/v1/streamlit
 
 ## API Documentation
 
-Each service (e.g. `logger`, `flink`, `kafka`, `streamlit`) provides its own OpenAPI documentation:
+Each service (e.g. `logger`, `spark`, `kafka`, `streamlit`) provides its own OpenAPI documentation:
 
 - Docs: http://localhost/api/v1/{service}/docs
 - ReDoc: http://localhost/api/v1/{service}/redoc
@@ -96,7 +96,7 @@ crypto_stream/
 │   ├── Dockerfile
 │   ├── pyproject.toml
 │   └── server.py
-├── flink/                  # Flink Service
+├── spark/                  # Spark Service
 │   ├── Dockerfile
 │   ├── pyproject.toml
 │   └── server.py
@@ -111,7 +111,7 @@ crypto_stream/
 ├── k8s/                   # Kubernetes Configurations
 │   ├── ingress.yaml
 │   ├── logger-deployment.yaml
-│   ├── flink-deployment.yaml
+│   ├── spark-deployment.yaml
 │   ├── kafka-deployment.yaml
 │   └── streamlit-deployment.yaml
 └── Makefile              # Build and deployment commands

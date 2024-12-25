@@ -40,6 +40,8 @@ run-local:
 k8s-setup:
 	minikube start
 	minikube addons enable ingress
+	# Set up Docker environment for Minikube
+	eval $(minikube docker-env)
 
 deploy-spark:
 	kubectl delete -f crypto_stream/k8s/spark-deployment.yaml
